@@ -92,7 +92,7 @@ r_forest = randomForest(quality~., wine)
 
 ### The Predictor 
 
-Create A `Predictor` object
+Create A `Predictor` object.
 `r colorize("hint", "blue")`: see `?Predictor`
 
 
@@ -109,23 +109,23 @@ predictor_rf = Predictor$new(r_forest,
 
 ```
 
-### Important Features
+### Feature Importance
 
-Find out which features were important
+Find out which features are important.
 
 `r colorize("hint", "blue")`: Use `FeatureImp` and the mean absolute error ('mae') as loss function.
 
 * Plot the importance
 * Where do you find the raw results table? 
 
-`r colorize("hint", "blue")`: you need to inspect the created R-object which contains the importance values in a data.frame (see `?FeatureImp`)
+`r colorize("hint", "blue")`: you need to inspect the created R-object which contains the importance scores in a data.frame (see `?FeatureImp`)
 
 **Solution:**
 
 We can measure the loss-based importance for each feature with `FeatureImp`. The resulting importance scores are calculated by shuffling each feature individually and measuring how much the performance drops (or in this case how much the 'mae' (loss) increases) compared to the original model's performance. For this regression task, we choose to measure the loss with the mean absolute error ('mae'), another choice would be the mean squared error ('mse').
 
 Once we create a new object of `FeatureImp`, the importance is automatically computed.
-We can call the plot() function of the object ...
+We can call the `plot()` function of the object ...
 
 ```{r fimportance}
 f_imp = FeatureImp$new(predictor_rf, loss = "mae")
@@ -151,20 +151,20 @@ Plot the PDP (average marginal effect curve) of alcohol.
 
 Besides knowing which features were important, we are interested in how the features influence the predicted wine quality. 
 The `FeatureEffect` class implements accumulated local effect plots, partial dependence plots and individual conditional expectation curves.
-The following plot shows the partial dependence (PD) for the feature 'alcohol'.
-The marks on the x-axis indicate the distribution of the feature 'alcohol', showing how relevant a region is for interpretation (little or no points mean that predictions might be uncertain in this area and hence we cannot reliably interpret these regions).
+The following plot shows the partial dependence (PD) for the feature alcohol.
+The marks on the x-axis indicate the distribution of the feature alcohol, showing how relevant a region is for interpretation (little or no points mean that predictions might be uncertain in this area and hence we cannot reliably interpret these regions).
 
 ```{r gec}
 alc_pdp = FeatureEffect$new(predictor_rf, feature = "alcohol", method = "pdp")
 alc_pdp$plot()
 ```
 
-The estimated average marginal effect seems to increase monotonically with the feature alcohol.
-This suggest that, on average, the predicted quality of wine increases with the volume of alcohol. 
+The estimated average marginal effect seems to increase monotonically with increasing values of alcohol.
+This suggests that, on average, the predicted quality of wine increases with the volume of alcohol. 
 
 ### PDP and ICE
 
-Plot the global effect curve of alcohol and add ICE curves
+Plot the PDP and add ICE curves.
 
 `r colorize("hint", "blue")`: `FeatureEffect$new` with `method=“pdp+ice”`
 
@@ -180,7 +180,7 @@ alc_plot_ice
 
 ### Plot the global effect curve of all features 
 
-`r colorize("hint", "blue")`: Use FeatureEffects$new.
+`r colorize("hint", "blue")`: Use `FeatureEffects$new`.
 
 `r colorize("hint", "blue")`: This function depends on the package `patchwork`.
 If you haven't installed the package, yet, install the package to your machine with `install.packages("patchwork")`.
@@ -193,7 +193,7 @@ f_effects$plot()
 
 ### Interaction
 
-Compute the Interaction statistic for all features
+Compute the Interaction statistic for all features.
 
 `r colorize("hint", "blue")`: Use `Interaction$new`
 
@@ -216,9 +216,9 @@ Since alcohol seems to interact most with other features, we dick deeper to unde
 
 ### Two-way interactions with feature 'alcohol'
 
-Compute the Interaction statistic between alcohol and all other features
+Compute the Interaction statistic between alcohol and all other features.
 
-`r colorize("hint", "blue")`: Use Interaction$new())
+`r colorize("hint", "blue")`: Use `Interaction$new`
 
 **Solution:**
 
@@ -245,7 +245,7 @@ knitr::include_graphics("../images/intera_alc.png")
 
 ### 2D-PDP
 
-Compute a 2D-PDP between alcohol and the most important feature that interacts with alcohol (from the previous exercise)
+Compute a 2D-PDP between alcohol and the most important feature that interacts with alcohol (from the previous exercise).
 
 **Solution:**
 
@@ -306,6 +306,8 @@ A counterfactual explanation of a prediction describes the smallest change to th
 
 Choose an interesting wine and explain its quality prediction by using Shapley values.
 
+`r colorize("hint", "blue")`: Use `Shapley$new`
+
 **Solution**:
 
 Shapley values are (like Counterfactuals) a local IML method, meaning that they provide explanations for one specific observation. However, compared to counterfactuals, they explain how much each feature attributed to the prediction of the regarded observation.
@@ -320,7 +322,7 @@ The plot shows how much the actual prediction of the vine deviates from the aver
 
 ### GG pros exercise (optional)
 
-For the ggplot2 pros: Color the ICE curves by type of wine
+For the ggplot2 pros: Color the ICE curves by type of wine.
 
 **Solution:**
 
