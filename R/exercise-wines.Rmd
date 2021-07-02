@@ -63,7 +63,7 @@ wine_complete = na.omit(wine_complete)
 wine_complete$type = as.factor(wine_complete$type)
 ```
 
-The Data Set:
+The data set:
 
 * 6500 red and white Portuguese "Vinho Verde" wines (the ratio between white and red is approximately 3:1)
 * Features: Physicochemical properties
@@ -104,7 +104,7 @@ rfmod
 You can copy and paste the previously shown code to import the data and build the `rfmod` model.
 Note that for all following exercises, you are asked to use the `wine` data that contains 1000 observations.
 We have more exercises than you can solve in the given time but you will have access to the solution after the session.
-It is totally fine if you only managed to worked on the first few exercises.
+It is totally fine if you only managed to work on the first few exercises.
 
 ### Exercise 1: The Predictor 
 
@@ -213,7 +213,7 @@ cat("-->")
 
 ### Exercise 4: PDP and ICE
 
-Plot the PDP and ICE curves. What do you observe?
+Plot the PDP and ICE curves of the feature alcohol. What do you observe?
 
 `r colorize("hint", "blue")`: `FeatureEffect$new` with `method="pdp+ice"`
 
@@ -244,7 +244,7 @@ Now you are asked to visualize and interpret the marginal effect of all features
 
 `r colorize("hint", "blue")`: Use `FeatureEffects$new` (it might take some time). To speed things up, you could reduce the number of grid points (the default is 20) on the x-axis of the PDP via the argument `grid.size` (but don't use a too small value).
 
-`r colorize("hint", "blue")`: You may need to install the package `patchwork`. If you haven't installed the package, yet, install the package to your machine with `install.packages("patchwork")`.
+`r colorize("hint", "blue")`: You may need to install the package `patchwork`. If you haven't installed the package yet, install the package to your machine with `install.packages("patchwork")`.
 
 ```{r, eval = !show.solution, echo = FALSE, results='asis'}
 cat("<!--")
@@ -266,7 +266,7 @@ cat("-->")
 
 ### Exercise 6: Interactions
 
-Compute the interaction strength using the H-statistic of all features to identify the feature that contains the strongest interactions with other features.
+Compute the interaction strength of all features using the H-statistic to identify the feature that contains the strongest interactions with other features.
 
 `r colorize("hint", "blue")`: Use `Interaction$new`.
 
@@ -300,7 +300,7 @@ cat("-->")
 
 ### Exercise 7: 2-way Interactions with Feature 'alcohol'
 
-The previous exercise, we only identified the feature with strongest interactions.
+In the previous exercise, we only identified the feature with strongest interactions.
 But it does not tell us with which other features the strongest interacting feature interacts.
 Now, you are asked to compute the interaction statistic between alcohol (the feature of interest) and all other features.
 
@@ -342,9 +342,9 @@ cat("-->")
 
 ### Exercise 8: 2D-PDP
 
-Compute a 2D-PDP between alcohol and one of the most important feature that interacts with alcohol (from the previous exercise).
+Compute a 2D-PDP between alcohol and one of the most important features that interacts with alcohol (from the previous exercise).
 
-`r colorize("hint", "blue")`: In previous exercises, we used `FeatureEffect$new` to create 1 dimensional PDPs. But now you are asked to create a 2 dimensional PDP for alcohol and the most important feature that interacts with alcohol from the previous exercise. Look up the help page `?FeatureEffect` to find out how to do this.
+`r colorize("hint", "blue")`: In previous exercises, we used `FeatureEffect$new` to create 1-dimensional PDPs. But now you are asked to create a 2-dimensional PDP for alcohol and  one of the most important features that interacts with alcohol from the previous exercise. Look up the help page `?FeatureEffect` to find out how to do this.
 
 ```{r, eval = !show.solution, echo = FALSE, results='asis'}
 cat("<!--")
@@ -369,10 +369,16 @@ knitr::include_graphics("../images/2D.png")
 
 The 2D-PDP visualizes the interaction between alcohol and acidity. The higher the alcohol volume and the less acid a wine is the higher is its quality. However, it needs to be noted that there are just a few observations for very high values of acidity and hence predictions in this region need to be regarded with caution.
 
+</details>
+```{r, eval = !show.solution, echo = FALSE, results='asis'}
+cat("-->")
+```
+
+
 ### Exercise 9: Shapely Values
 
-Shapley values are (like Counterfactuals) a local IML method, meaning that they provide explanations for one specific observation. 
-However, compared to counterfactuals, they explain how much each feature attributed to the prediction of the regarded observation.
+Shapley values are a local IML method, meaning that they provide explanations for one specific observation. 
+They explain how much each feature attributed to the prediction of the regarded observation.
 Choose an interesting wine and explain its quality prediction by using Shapley values (e.g., a high quality wine with rather low alcohol volume).
 
 `r colorize("hint", "blue")`: Use `Shapley$new`
@@ -401,14 +407,14 @@ cat("-->")
 
 ### Exercise 10: Counterfactuals
 
-This exercise provides the fundamental ideas of another IML approach which is called *Counterfactual Explanations*. 
+This exercise provides the fundamental ideas of another local IML approach which is called *Counterfactual Explanations*. 
 A counterfactual explanation of a prediction describes the smallest change to the feature values that changes the prediction to a predefined output.
 We can manually change some feature values and inspect how the prediction changes.
 
 Your task is to choose a wine with a rating of 5 and to change some of its feature values so that the predicted wine rating changes to 6. 
 Try to change as few features as possible (e.g., 1-2 features) and with rather small changes.
 
-`r colorize("hint", "blue")`: After having chosen a wine with quality 5, you need to manually change feature values of 1-2 features of this wine until its predicted wine quality is higher than 6 (while holding all other features unchanged). To do so, you may create a sequence of feature values using the `seq` function and may use the `expand.grid` function to obtain a grid containing all possible combinations multiple sequences, e.g.,
+`r colorize("hint", "blue")`: After having chosen a wine with quality 5, you need to manually change feature values of 1-2 features of this wine until its predicted wine quality is higher than 6 (while holding all other features unchanged). To do so, you may create a sequence of feature values using the `seq` function and may use the `expand.grid` function to obtain a grid containing all possible combinations of multiple sequences, e.g.,
 ```{r}
 # create sequences of feature 1 and feature 2
 feat1 = seq(1, 2, length.out = 3)
@@ -472,12 +478,13 @@ cat("-->")
 
 ### Exercise 11: Further hypotheses
 
-Think about further hypotheses that you can answer by applying the introduced IML methods.
+Think about further interesting hypotheses that you can answer by applying the introduced IML methods.
 
 
 ### Exercise 12: GG pros exercise (optional)
 
-For the ggplot2 pros: Color the ICE curves by type of wine.
+For the ggplot2 pros: Color the ICE curves for the feature alcohol (see exercise 4) by type of wine.
+How can you interpret the result?
 
 ```{r, eval = !show.solution, echo = FALSE, results='asis'}
 cat("<!--")
