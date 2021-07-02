@@ -26,7 +26,7 @@ colorize <- function(x, color) {
   } else x
 }
 
-show.solution = F
+show.solution = T
 ```
 
 # Introduction
@@ -119,7 +119,7 @@ cat("<!--")
 <details>
   <summary>**Solution**</summary>
 A Predictor object holds a machine learning model (mlr3, caret, randomForest, ...) and the data to be used for analyzing the model.
-The interpretation methods in the `iml` package require that the machine learning model and the data is wrapped in a Predictor object.
+The interpretation methods in the `iml` package require that the machine learning model and the data are wrapped in a Predictor object.
 
 ```{r predictor}
 rfpred = Predictor$new(rfmod, data = wine, y = "quality")
@@ -204,7 +204,7 @@ alc_pdp$plot()
 
 The estimated average marginal effect seems to increase monotonically with increasing values of alcohol. 
 This suggests that, on average, the predicted quality of wine increases with the volume of alcohol.
-However, at around alcohol level of 12, the wine quality does not seem to improve much.
+However, at an alcohol level of around 12, the wine quality does not seem to improve much.
 </details>
 ```{r, eval = !show.solution, echo = FALSE, results='asis'}
 cat("-->")
@@ -397,7 +397,7 @@ idx = which(wine$quality >= 8 & wine$alcohol < 10)[1]
 shapley_values = Shapley$new(rfpred, x.interest = wine[idx,])
 plot(shapley_values)
 ```
-The plot shows how much the actual prediction of the vine deviates from the average wine quality and how this deviation is attributed to the different features. In this specific example, we can see that the low acidity and pH value contribute most to the good rating of the wine. 
+The plot shows how much the actual prediction of the wine deviates from the average wine quality and how this deviation is attributed to the different features. In this specific example, we can see that the low acidity and pH value contribute most to the good rating of the wine. 
 
 </details>
 ```{r, eval = !show.solution, echo = FALSE, results='asis'}
@@ -494,19 +494,29 @@ cat("<!--")
 <details>
   <summary>**Solution**</summary>
 ```{r plot_ice_bytype}
-wine_types = as.factor(rep(c(NA, wine$type), each = 20))
+# split result table in pdp and ice data
+pdp_dta = alc_pdp_ice$results[which(alc_pdp_ice$results$.type == "pdp"), ]
+ice_dta = alc_pdp_ice$results[which(alc_pdp_ice$results$.type == "ice"), ]
+
+# add wine type as new column to ice data table
+wine_types = as.factor(rep(c(wine$type), each = 20))
 levels(wine_types) = c("red", "white")
-alc_pdp_ice$results = cbind(
-  alc_pdp_ice$results,
+ice_dta = cbind(
+  ice_dta,
   "type" = wine_types
 )
 
-pdp_dta = alc_pdp_ice$results[which(alc_pdp_ice$results$.type == "pdp"), ]
-ggplot(alc_pdp_ice$results, aes(x= alcohol, y = .value, colour = type)) +
-  geom_line(alpha = 0.2, mapping = aes(group = .id)) +
-  geom_line(data = pdp_dta, size = 3, colour = "black")
-```
+# create grouped pdps for each wine type to visualize the mean difference between them
+pdp_groups = aggregate(.value ~ alcohol + type, data = ice_dta, mean)
 
+# create a ggplot showing the ice curves of alcohol by wine type and the average differences by the grouped pdps
+ggplot(ice_dta, aes(x= alcohol, y = .value, colour = type)) +
+  geom_line(alpha = 0.1, mapping = aes(group = .id)) +
+  geom_line(data = pdp_dta, size = 2, colour = "black") +
+  geom_line(data = pdp_groups, size = 2, aes(group = type), colour = "white") +
+  geom_line(data = pdp_groups, size = 1.1, aes(colour = type))
+```
+It seems that on average for both wine types, the alcohol volume has a positive effect on the wine quality. For all alcohol levels, white wines are on average better rated than the red wines.
 </details>
 ```{r, eval = !show.solution, echo = FALSE, results='asis'}
 cat("-->")
